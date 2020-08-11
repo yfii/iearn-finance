@@ -891,6 +891,7 @@ class Store {
           symbol: 'yCRV',
           description: 'yDAI/yUSDC/yUSDT/yTUSD',
           poolSymbol: 'YFII',
+          poolAddress: '0xf2d645D45F0A46CDfa080595Df1d6C9D733296c3',
           erc20address: '0x49bD7631856078257d5Aef996Cb1218519eA1Db4',
           vaultContractAddress: '0x2036A837846F9f98815cD07417111229d7A67B53',
           vaultContractABI: config.vaultContractABI,
@@ -905,6 +906,7 @@ class Store {
           symbol: 'BPT',
           description: 'Balancer Pool Token',
           poolSymbol: 'YFII',
+          poolAddress: '0xf2d645D45F0A46CDfa080595Df1d6C9D733296c3',
           erc20address: '0xB7402204753DD10FBfc74cF4Ee6FCA05017B716D',
           vaultContractAddress: '0x8C36cabA73d985210CF60C8f932a4f04326Cb091',
           vaultContractABI: config.vaultContractABI,
@@ -1481,6 +1483,21 @@ class Store {
         console.log(ex)
         return callback(ex)
       }
+    }
+  }
+
+  _getMyBalance = async (web3, asset, account, callback) => {
+
+    let erc20Contract = new web3.eth.Contract(config.erc20ABI, asset.poolAddress)
+
+    try {
+      var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
+      balance = parseFloat(balance)/10**asset.decimals
+      console.log(balance)
+      callback(null, parseFloat(balance))
+    } catch(ex) {
+      console.log(ex)
+      return callback(ex)
     }
   }
 
@@ -2681,12 +2698,14 @@ class Store {
       async.parallel([
         (callbackInner) => { this._getERC20Balance(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getPooledBalance(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getPoolPricePerShare(web3, asset, account, callbackInner) }
+        (callbackInner) => { this._getPoolPricePerShare(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getMyBalance(web3, asset, account, callbackInner) }
       ], (err, data) => {
         asset.balance = data[0]
         asset.pooledBalance = data[1]
         asset.pricePerFullShare = data[2]
-
+        asset.myBalance = data[3]
+        
         callback(null, asset)
       })
     }, (err, assets) => {
@@ -2899,7 +2918,7 @@ class Store {
   claimPool = (payload) => {
     const account = store.getStore('account')
     const { asset } = payload.content
-    
+
     this._callClaimPool(asset, account, (err, claimResult) => {
       if(err) {
         return emitter.emit(ERROR, err);
