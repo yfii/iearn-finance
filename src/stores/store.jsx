@@ -2946,32 +2946,32 @@ class Store {
     })
   }
 
-  _callWithdrawPool = async (asset, account, callback) => {
-    const web3 = new Web3(store.getStore('web3context').library.provider);
+  // _callWithdrawPool = async (asset, account, callback) => {
+  //   const web3 = new Web3(store.getStore('web3context').library.provider);
 
-    let vaultContract = new web3.eth.Contract(asset.vaultContractABI, asset.vaultContractAddress)
+  //   let vaultContract = new web3.eth.Contract(asset.vaultContractABI, asset.vaultContractAddress)
 
-    vaultContract.methods.withdrawAll().send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
-    .on('transactionHash', function(hash){
-      console.log(hash)
-      callback(null, hash)
-    })
-    .on('confirmation', function(confirmationNumber, receipt){
-      console.log(confirmationNumber, receipt);
-    })
-    .on('receipt', function(receipt){
-      console.log(receipt);
-    })
-    .on('error', function(error) {
-      console.log(error);
-      if (!error.toString().includes("-32601")) {
-        if(error.message) {
-          return callback(error.message)
-        }
-        callback(error)
-      }
-    })
-  }
+  //   vaultContract.methods.withdrawAll().send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
+  //   .on('transactionHash', function(hash){
+  //     console.log(hash)
+  //     callback(null, hash)
+  //   })
+  //   .on('confirmation', function(confirmationNumber, receipt){
+  //     console.log(confirmationNumber, receipt);
+  //   })
+  //   .on('receipt', function(receipt){
+  //     console.log(receipt);
+  //   })
+  //   .on('error', function(error) {
+  //     console.log(error);
+  //     if (!error.toString().includes("-32601")) {
+  //       if(error.message) {
+  //         return callback(error.message)
+  //       }
+  //       callback(error)
+  //     }
+  //   })
+  // }
 
   getExchangePrice = async (payload) => {
     const account = store.getStore('account')

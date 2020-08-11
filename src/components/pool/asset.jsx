@@ -298,18 +298,6 @@ class Asset extends Component {
             >
             <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>Withdraw</Typography>
           </Button>
-          { asset.version === 2 &&
-            <Button
-              className={ classes.actionButton }
-              variant="outlined"
-              color="primary"
-              disabled={ loading || !account.address || asset.pricePerFullShare <= 0 }
-              onClick={ this.onWithdrawAll }
-              fullWidth
-              >
-              <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>Withdraw All</Typography>
-            </Button>
-          }
         </div>
       </div>
     </div>)
