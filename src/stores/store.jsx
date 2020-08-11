@@ -62,6 +62,8 @@ import {
   WITHDRAW_POOL_RETURNED,
   WITHDRAW_ALL_POOL,
   WITHDRAW_ALL_POOL_RETURNED,
+  CLAIM_POOL,
+  CLAIM_POOL_RETURNED,
   EXCHANGE_POOL,
   EXCHANGE_POOL_RETURNED,
   GET_EXCHANGE_PRICE,
@@ -1052,6 +1054,9 @@ class Store {
             break;
           case WITHDRAW_ALL_POOL:
             this.withdrawAllPool(payload)
+            break;
+          case CLAIM_POOL:
+            this.claimPool(payload)
             break;
           case EXCHANGE_POOL:
             this.exchangePool(payload)
@@ -2889,6 +2894,44 @@ class Store {
           callback(error)
         }
       })
+  }
+
+  claimPool = (payload) => {
+    const account = store.getStore('account')
+    const { asset } = payload.content
+    
+    this._callClaimPool(asset, account, (err, claimResult) => {
+      if(err) {
+        return emitter.emit(ERROR, err);
+      }
+      return emitter.emit(CLAIM_POOL_RETURNED, claimResult)
+    })
+  }
+
+  _callClaimPool = async (asset, account, callback) => {
+    const web3 = new Web3(store.getStore('web3context').library.provider);
+    let vaultContract = new web3.eth.Contract(asset.vaultContractABI, asset.vaultContractAddress)
+
+    vaultContract.methods.claim().send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
+    .on('transactionHash', function(hash){
+      console.log(hash)
+      callback(null, hash)
+    })
+    .on('confirmation', function(confirmationNumber, receipt){
+      console.log(confirmationNumber, receipt);
+    })
+    .on('receipt', function(receipt){
+      console.log(receipt);
+    })
+    .on('error', function(error) {
+      console.log(error);
+      if (!error.toString().includes("-32601")) {
+        if(error.message) {
+          return callback(error.message)
+        }
+        callback(error)
+      }
+    })
   }
 
   withdrawPool = (payload) => {

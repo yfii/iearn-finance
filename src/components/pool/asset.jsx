@@ -17,7 +17,9 @@ import {
   DEPOSIT_ALL_POOL,
   DEPOSIT_ALL_POOL_RETURNED,
   WITHDRAW_ALL_POOL,
-  WITHDRAW_ALL_POOL_RETURNED
+  WITHDRAW_ALL_POOL_RETURNED,
+  CLAIM_POOL,
+  CLAIM_POOL_RETURNED
 } from '../../constants'
 
 import Store from "../../stores";
@@ -126,6 +128,7 @@ class Asset extends Component {
     emitter.on(WITHDRAW_POOL_RETURNED, this.withdrawReturned);
     emitter.on(DEPOSIT_ALL_POOL_RETURNED, this.depositReturned);
     emitter.on(WITHDRAW_ALL_POOL_RETURNED, this.withdrawReturned);
+    emitter.on(CLAIM_POOL_RETURNED, this.claimReturned);
     emitter.on(ERROR, this.errorReturned);
   }
 
@@ -134,6 +137,7 @@ class Asset extends Component {
     emitter.removeListener(WITHDRAW_POOL_RETURNED, this.withdrawReturned);
     emitter.removeListener(DEPOSIT_ALL_POOL_RETURNED, this.depositReturned);
     emitter.removeListener(WITHDRAW_ALL_POOL_RETURNED, this.withdrawReturned);
+    emitter.removeListener(CLAIM_POOL_RETURNED, this.claimReturned);
     emitter.removeListener(ERROR, this.errorReturned);
   };
 
@@ -142,6 +146,10 @@ class Asset extends Component {
   };
 
   withdrawReturned = (txHash) => {
+    this.setState({ loading: false, redeemAmount: '' })
+  };
+
+  claimReturned = (txHash) => {
     this.setState({ loading: false, redeemAmount: '' })
   };
 
@@ -239,7 +247,7 @@ class Asset extends Component {
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-          <Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ asset.pooledBalance ? (Math.floor(asset.pooledBalance*10000)/10000).toFixed(4) : '0.0000' } { asset.poolSymbol } ({ (asset.pricePerFullShare ? (Math.floor(asset.pricePerFullShare*10000)/10000).toFixed(4) : '0.0000') } { asset.symbol }) </Typography>
+          <Typography variant='h4' className={ classes.value } noWrap>{ asset.pooledBalance ? (Math.floor(asset.pooledBalance*10000)/10000).toFixed(4) : '0.0000' } { asset.poolSymbol }<button onClick={this.onClaim} disabled={ loading || !account.address || asset.pooledBalance <= 0 }>Claim</button> ({ (asset.pricePerFullShare ? (Math.floor(asset.pricePerFullShare*10000)/10000).toFixed(4) : '0.0000') } { asset.symbol }) </Typography>
         </div>
         <TextField
           fullWidth
@@ -362,6 +370,15 @@ class Asset extends Component {
     this.setState({ loading: true })
     startLoading()
     dispatcher.dispatch({ type: WITHDRAW_ALL_POOL, content: { asset: asset } })
+  }
+
+  onClaim = () => {
+    const { asset, startLoading } = this.props
+
+    this.setState({ loading: true })
+    startLoading()
+
+    dispatcher.dispatch({ type: CLAIM_POOL, content: { asset: asset } })
   }
 
   setAmount = (percent) => {
