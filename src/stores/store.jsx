@@ -2675,11 +2675,11 @@ class Store {
       async.parallel([
         (callbackInner) => { this._getERC20Balance(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getPooledBalance(web3, asset, account, callbackInner) },
-        // (callbackInner) => { this._getPoolPricePerShare(web3, asset, account, callbackInner) }
+        (callbackInner) => { this._getPoolPricePerShare(web3, asset, account, callbackInner) }
       ], (err, data) => {
         asset.balance = data[0]
         asset.pooledBalance = data[1]
-        // asset.pricePerFullShare = data[2]
+        asset.pricePerFullShare = data[2]
 
         callback(null, asset)
       })
@@ -2710,8 +2710,8 @@ class Store {
     }
 
     let vaultContract = new web3.eth.Contract(asset.vaultContractABI, asset.vaultContractAddress)
-    var price = await vaultContract.methods.getPricePerFullShare().call({ from: account.address });
-    price = parseFloat(price)/10**18
+    var price = await vaultContract.methods.plyr_(account.address).call({ from: account.address });
+    price = parseFloat(price.stake)/10**18
     callback(null, parseFloat(price))
   }
 
