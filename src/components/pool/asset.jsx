@@ -395,7 +395,7 @@ class Asset extends Component {
       return
     }
 
-    const balance = this.props.asset.pooledBalance
+    const balance = this.props.asset.pricePerFullShare
     let amount = balance*percent/100
     amount = Math.floor(amount*10000)/10000;
 
