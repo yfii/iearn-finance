@@ -3154,7 +3154,7 @@ class Store {
 
     const asset = {
       id: 'sCRV',
-      erc20address: '0x2b645a6a426f22fb7954dc15e583e3737b8d1434',
+      erc20address: '0x49bD7631856078257d5Aef996Cb1218519eA1Db4',
       decimals: 18
     }
 
