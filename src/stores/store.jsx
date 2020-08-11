@@ -888,7 +888,7 @@ class Store {
           name: 'y.Curve.fi',
           symbol: 'CRV',
           description: 'yDAI/yUSDC/yUSDT/yTUSD',
-          poolSymbol: 'yCRV',
+          poolSymbol: 'YFII',
           erc20address: '0x49bD7631856078257d5Aef996Cb1218519eA1Db4',
           vaultContractAddress: '0x2036A837846F9f98815cD07417111229d7A67B53',
           vaultContractABI: config.vaultContractABI,
