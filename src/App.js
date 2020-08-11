@@ -68,12 +68,16 @@ class App extends Component {
             background: "#f9fafb"
           }}>
             <Switch>
-              <Route path="/vaults">
+              {/* <Route path="/vaults">
                 <Header setHeaderValue={ this.setHeaderValue } headerValue={ headerValue } />
                 <Vaults />
               </Route>
               <Route path="/">
                 <Home />
+              </Route> */}
+              <Route>
+                <Header />
+                <Vaults />
               </Route>
             </Switch>
             <Footer />
