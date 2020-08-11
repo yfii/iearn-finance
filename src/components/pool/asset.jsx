@@ -292,7 +292,7 @@ class Asset extends Component {
             className={ classes.actionButton }
             variant="outlined"
             color="primary"
-            disabled={ loading || !account.address || asset.pooledBalance <= 0 }
+            disabled={ loading || !account.address || asset.pricePerFullShare <= 0 }
             onClick={ this.onWithdraw }
             fullWidth
             >
@@ -303,7 +303,7 @@ class Asset extends Component {
               className={ classes.actionButton }
               variant="outlined"
               color="primary"
-              disabled={ loading || !account.address || asset.pooledBalance <= 0 }
+              disabled={ loading || !account.address || asset.pricePerFullShare <= 0 }
               onClick={ this.onWithdrawAll }
               fullWidth
               >
@@ -357,7 +357,7 @@ class Asset extends Component {
     const { redeemAmount } = this.state
     const { asset, startLoading  } = this.props
 
-    if(!redeemAmount || isNaN(redeemAmount) || redeemAmount <= 0 || redeemAmount > asset.pooledBalance) {
+    if(!redeemAmount || isNaN(redeemAmount) || redeemAmount <= 0 || redeemAmount > asset.pricePerFullShare) {
       this.setState({ redeemAmountError: true })
       return false
     }
