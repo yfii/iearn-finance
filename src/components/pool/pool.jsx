@@ -416,11 +416,11 @@ class Pool extends Component {
                 </div>
               </div>
               <div className={classes.heading}>
-                <Typography variant={ 'h3' }>{ (asset.balance).toFixed(4)+' '+asset.symbol }</Typography>
+                <Typography variant={ 'h3' }>{ (Math.floor(asset.balance*10000)/10000).toFixed(4)+' '+asset.symbol }</Typography>
                 <Typography variant={ 'h5' } className={ classes.grey }>Balance</Typography>
               </div>
               <div className={classes.heading}>
-                <Typography variant={ 'h3' }>{ (asset.pooledBalance).toFixed(4)+' '+ asset.poolSymbol }</Typography>
+                <Typography variant={ 'h3' }>{ (Math.floor(asset.pooledBalance*10000)/10000).toFixed(4)+' '+ asset.poolSymbol }</Typography>
                 <Typography variant={ 'h5' } className={ classes.grey }>Deposited</Typography>
               </div>
             </div>
