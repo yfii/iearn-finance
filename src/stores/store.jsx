@@ -897,19 +897,20 @@ class Store {
           decimals: 18,
           version: 1
         },
-        // {
-        //   id: 'DAI',
-        //   name: 'DAI',
-        //   symbol: 'DAI',
-        //   description: 'DAI Stablecoin',
-        //   poolSymbol: 'yDAI',
-        //   erc20address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        //   vaultContractAddress: null,
-        //   vaultContractABI: config.vaultContractABI,
-        //   balance: 0,
-        //   pooledBalance: 0,
-        //   decimals: 18,
-        // },
+        {
+          id: 'BPT',
+          name: 'BPT',
+          symbol: 'BPT',
+          description: 'BPT',
+          poolSymbol: 'YFII',
+          erc20address: '0xB7402204753DD10FBfc74cF4Ee6FCA05017B716D',
+          vaultContractAddress: '0x8C36cabA73d985210CF60C8f932a4f04326Cb091',
+          vaultContractABI: config.vaultContractABI,
+          balance: 0,
+          pooledBalance: 0,
+          decimals: 18,
+          version: 1
+        },
         // {
         //   id: 'USDT',
         //   name: 'USDT',
