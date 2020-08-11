@@ -884,9 +884,9 @@ class Store {
         //   version: 1
         // },
         {
-          id: 'CRV',
+          id: 'yCRV',
           name: 'y.Curve.fi',
-          symbol: 'CRV',
+          symbol: 'yCRV',
           description: 'yDAI/yUSDC/yUSDT/yTUSD',
           poolSymbol: 'YFII',
           erc20address: '0x49bD7631856078257d5Aef996Cb1218519eA1Db4',
@@ -901,7 +901,7 @@ class Store {
           id: 'BPT',
           name: 'BPT',
           symbol: 'BPT',
-          description: 'BPT',
+          description: 'Balancer Pool Token',
           poolSymbol: 'YFII',
           erc20address: '0xB7402204753DD10FBfc74cF4Ee6FCA05017B716D',
           vaultContractAddress: '0x8C36cabA73d985210CF60C8f932a4f04326Cb091',
