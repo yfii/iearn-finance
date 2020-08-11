@@ -3,19 +3,13 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import {
   Switch,
+  HashRouter,
   Route
 } from "react-router-dom";
-import IpfsRouter from 'ipfs-react-router'
 
 import './i18n';
 import interestTheme from './theme';
 
-import APR from './components/apr';
-import InvestSimple from './components/investSimple';
-import Manage from './components/manage';
-import Performance from './components/performance';
-import Zap from './components/zap';
-import IDai from './components/idai';
 import Footer from './components/footer';
 import Home from './components/home';
 import Header from './components/header';
@@ -65,7 +59,7 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={ createMuiTheme(interestTheme) }>
         <CssBaseline />
-        <IpfsRouter>
+        <HashRouter>
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -74,27 +68,6 @@ class App extends Component {
             background: "#f9fafb"
           }}>
             <Switch>
-              <Route path="/apr">
-                <Header setHeaderValue={ this.setHeaderValue } headerValue={ headerValue } />
-                <APR />
-              </Route>
-              <Route path="/earn">
-                <Header setHeaderValue={ this.setHeaderValue } headerValue={ headerValue } />
-                <InvestSimple />
-              </Route>
-              <Route path="/zap">
-                <Header setHeaderValue={ this.setHeaderValue } headerValue={ headerValue } />
-                <Zap />
-              </Route>
-              <Route path="/idai">
-                <IDai />
-              </Route>
-              <Route path="/performance">
-                <Performance />
-              </Route>
-              <Route path="/manage">
-                <Manage />
-              </Route>
               <Route path="/vaults">
                 <Header setHeaderValue={ this.setHeaderValue } headerValue={ headerValue } />
                 <Vaults />
@@ -105,7 +78,7 @@ class App extends Component {
             </Switch>
             <Footer />
           </div>
-        </IpfsRouter>
+        </HashRouter>
       </MuiThemeProvider>
     );
   }
