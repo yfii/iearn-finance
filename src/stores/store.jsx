@@ -930,6 +930,21 @@ class Store {
           decimals: 18,
           version: 1
         },
+        {
+          id: 'lend',
+          name: 'LEND',
+          symbol: 'LEND',
+          description: 'LEND',
+          poolSymbol: 'YFII',
+          poolAddress: '0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83',
+          erc20address: '0x80fb784b7ed66730e8b1dbd9820afd29931aab03',
+          vaultContractAddress: '0xed288394e3086fb90e43f4919b5d3661c05278be',
+          vaultContractABI: config.vaultContractABI,
+          balance: 0,
+          pooledBalance: 0,
+          decimals: 18,
+          version: 1
+        },
         // {
         //   id: 'yCRV',
         //   name: 'y.Curve.fi',
