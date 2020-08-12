@@ -960,21 +960,21 @@ class Store {
           decimals: 18,
           version: 1
         },     
-        // {
-        //   id: 'ampl',
-        //   name: 'AMPL',
-        //   symbol: 'AMPL',
-        //   description: 'AMPL',
-        //   poolSymbol: 'YFII',
-        //   poolAddress: '0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83',
-        //   erc20address: '0xc5be99A02C6857f9Eac67BbCE58DF5572498F40c',
-        //   vaultContractAddress: '0x2f7c556285800a091e88218c0896a6bfb87bb45f',
-        //   vaultContractABI: config.vaultContractABI,
-        //   balance: 0,
-        //   pooledBalance: 0,
-        //   decimals: 18,
-        //   version: 1
-        // },
+        {
+          id: 'ampl',
+          name: 'AMPL',
+          symbol: 'AMPL',
+          description: 'AMPL LP',
+          poolSymbol: 'YFII',
+          poolAddress: '0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83',
+          erc20address: '0xc5be99A02C6857f9Eac67BbCE58DF5572498F40c',
+          vaultContractAddress: '0xab721be37a57b7f91098cb5f11ae423dc76350a9',
+          vaultContractABI: config.vaultContractABI,
+          balance: 0,
+          pooledBalance: 0,
+          decimals: 18,
+          version: 1
+        },
         {
           id: 'yfi',
           name: 'YFI',
