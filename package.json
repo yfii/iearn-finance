@@ -44,8 +44,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "buildAndDeploy": "react-scripts build && echo 'testvault.yfii.finance' >> ./build/CNAME && gh-pages -d build",
-    "deploy1": "echo 'testvault.yfii.finance' >> ./build/CNAME && gh-pages -d build"
+    "buildAndDeploy": "react-scripts build && echo 'vault.yfii.finance' >> ./build/CNAME && gh-pages -d build",
+    "deploy1": "echo 'vault.yfii.finance' >> ./build/CNAME && gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
