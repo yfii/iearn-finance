@@ -900,6 +900,21 @@ class Store {
           decimals: 18,
           version: 1
         },
+        {
+          id: 'snx',
+          name: 'SNX',
+          symbol: 'SNX',
+          description: 'SNX',
+          poolSymbol: 'YFII',
+          poolAddress: '0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83',
+          erc20address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+          vaultContractAddress: '0x956da37db508901294f62488e030ce0871293270',
+          vaultContractABI: config.vaultContractABI,
+          balance: 0,
+          pooledBalance: 0,
+          decimals: 18,
+          version: 1
+        },
         // {
         //   id: 'yCRV',
         //   name: 'y.Curve.fi',
