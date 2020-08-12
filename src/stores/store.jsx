@@ -915,6 +915,21 @@ class Store {
           decimals: 18,
           version: 1
         },
+        {
+          id: 'comp',
+          name: 'COMP',
+          symbol: 'COMP',
+          description: 'COMP',
+          poolSymbol: 'YFII',
+          poolAddress: '0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83',
+          erc20address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
+          vaultContractAddress: '0x5c8Bb2C9C0bC2655dE05198de50651820b95C541',
+          vaultContractABI: config.vaultContractABI,
+          balance: 0,
+          pooledBalance: 0,
+          decimals: 18,
+          version: 1
+        },
         // {
         //   id: 'yCRV',
         //   name: 'y.Curve.fi',
@@ -1174,7 +1189,7 @@ class Store {
           await erc20Contract.methods.approve(contract, web3.utils.toWei('0', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
         }
 
-        await erc20Contract.methods.approve(contract, web3.utils.toWei('999999999999', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
+        await erc20Contract.methods.approve(contract, web3.utils.toWei('79228162514', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
         callback()
       } else {
         callback()
