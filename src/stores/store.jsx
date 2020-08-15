@@ -886,6 +886,21 @@ class Store {
         //   version: 1
         // },
         {
+          id: 'ycrv',
+          name: 'yCRV',
+          symbol: 'CRV',
+          description: 'yCRV',
+          poolSymbol: 'YFII',
+          poolAddress: '0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83',
+          erc20address: '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8',
+          vaultContractAddress: '0xD2db1EF55549eCdacb4e7da081216AE96f0Eedcb',
+          vaultContractABI: config.vaultContractABI,
+          balance: 0,
+          pooledBalance: 0,
+          decimals: 18,
+          version: 1
+        },
+        {
           id: 'weth',
           name: 'WETH',
           symbol: 'WETH',
