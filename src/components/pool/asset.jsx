@@ -359,6 +359,14 @@ class Asset extends Component {
     }
   };
 
+  formatDuring = (mss) => {
+    // var days = parseInt(mss / (1000 * 60 * 60 * 24));
+    var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+    // var seconds = (mss % (1000 * 60)) / 1000;
+    return hours + " hours " + minutes + " minutes";
+  }
+
   depositReturned = () => {
     this.setState({ loading: false, amount: '' })
   };
@@ -574,6 +582,10 @@ class Asset extends Component {
           <p style={{color: "red"}}>Your actual dividend amount is {
             (Math.floor(depositedTime*asset.pooledBalance*10000)/10000/(1000*60*60*24)).toFixed(4)
           }</p>
+          <p>
+            Interest collection ratio: {Number(depositedTime*100/(1000*60*60*24)).toFixed(1)}%<br/>
+            Time to full prize: {this.formatDuring(depositedTime)}
+          </p>
         </DialogContent>
         <DialogActions className={classes.modalFooter}>
           <Button onClick={() => this.setOpen(false, true)} color="secondary">

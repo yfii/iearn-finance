@@ -2856,7 +2856,6 @@ class Store {
           asset.pricePerFullShare = data[2]
           asset.myBalance = data[3]
           asset.depositedTime = data[4]
-
           callback(null, asset)
         })
       } else {
