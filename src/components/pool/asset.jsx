@@ -315,6 +315,7 @@ class Asset extends Component {
       open: false,
       depositedTime: 0,
       account: store.getStore('account'),
+      isClaim: true
     }
   }
 
@@ -336,24 +337,26 @@ class Asset extends Component {
     emitter.removeListener(ERROR, this.errorReturned);
   };
 
-  setOpen = open => {
-    this.setState({open})
+  setOpen = (open, isClaim) => {
+    this.setState({open, isClaim})
   }
 
-  handleClick = (asset, confirm, event) => {
+  handleClick = (asset, isClaim, event) => {
     if (asset.earnNeed24Hours) {
       const nowTime = new Date().getTime();
-      console.log(nowTime)
-      console.log(asset.depositedTime)
+
       const depositedTime = new Date().getTime() - asset.depositedTime*1000;
-      console.log(depositedTime)
-      console.log(event.currentTarget)
+
       if (depositedTime < 1000*60*60*24) {
         this.setState({ depositedTime })
-        return this.setOpen(true);
+        return this.setOpen(true, isClaim);
       } 
     } 
-    confirm();
+    if (isClaim) {
+      this.onClaim()
+    } else {
+      this.onWithdraw()
+    }
   };
 
   depositReturned = () => {
@@ -382,7 +385,8 @@ class Asset extends Component {
       redeemAmountError,
       loading,
       open,
-      depositedTime
+      depositedTime,
+      isClaim
     } = this.state
 
     return (<div className={ classes.actionsContainer }>
@@ -466,7 +470,7 @@ class Asset extends Component {
         <div className={ classes.balances }>
           <Typography variant='h4' className={ classes.value } noWrap>{ asset.pooledBalance ? (Math.floor(asset.pooledBalance*10000)/10000).toFixed(4) : '0.0000' } { asset.poolSymbol }
             <button 
-              onClick={this.handleClick.bind(this, asset, this.onClaim)}
+              onClick={this.handleClick.bind(this, asset, true)}
               disabled={ loading || !account.address || asset.pooledBalance <= 0 }
             >
                 Claim
@@ -526,7 +530,7 @@ class Asset extends Component {
             variant="outlined"
             color="primary"
             disabled={ loading || !account.address || asset.pricePerFullShare <= 0 }
-            onClick={ this.handleClick.bind(this, asset, this.onWithdraw) }
+            onClick={ this.handleClick.bind(this, asset, false) }
             fullWidth
             >
             <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>Withdraw</Typography>
@@ -541,7 +545,7 @@ class Asset extends Component {
         open={open}
         TransitionComponent={Transition}
         keepMounted
-        onClose={() => this.setOpen(false)}
+        onClose={() => this.setOpen(false, true)}
         aria-labelledby="classic-modal-slide-title"
         aria-describedby="classic-modal-slide-description"
       >
@@ -555,7 +559,7 @@ class Asset extends Component {
             className={classes.modalCloseButton}
             key="close"
             aria-label="Close"
-            onClick={() => this.setOpen(false)}
+            onClick={() => this.setOpen(false,  true)}
           >
             {" "}
             <Close className={classes.modalClose} />
@@ -572,10 +576,10 @@ class Asset extends Component {
           }</p>
         </DialogContent>
         <DialogActions className={classes.modalFooter}>
-          <Button onClick={() => this.setOpen(false)} color="secondary">
+          <Button onClick={() => this.setOpen(false, true)} color="secondary">
             Close
           </Button>
-          <Button color="primary" onClick={this.onClaim}>Confirm</Button>
+          <Button color="primary" onClick={isClaim?this.onClaim:this.onWithdraw}>Confirm</Button>
         </DialogActions>
       </Dialog>
     </div>)
@@ -643,6 +647,7 @@ class Asset extends Component {
   }
 
   onClaim = () => {
+    console.log('onClaim')
     const { asset, startLoading } = this.props
 
     this.setState({ loading: true })
