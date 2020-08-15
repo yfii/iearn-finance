@@ -584,7 +584,7 @@ class Asset extends Component {
           }</p>
           <p>
             Interest collection ratio: {Number(depositedTime*100/(1000*60*60*24)).toFixed(1)}%<br/>
-            Time to full prize: {this.formatDuring(depositedTime)}
+            Time to full prize: {this.formatDuring((1000*60*60*24)-depositedTime)}
           </p>
         </DialogContent>
         <DialogActions className={classes.modalFooter}>
