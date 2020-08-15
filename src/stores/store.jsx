@@ -898,7 +898,8 @@ class Store {
           balance: 0,
           pooledBalance: 0,
           decimals: 18,
-          version: 1
+          version: 1,
+          earnNeed24Hours: true
         },
         {
           id: 'weth',
@@ -1630,6 +1631,18 @@ class Store {
       balance = parseFloat(balance)/10**asset.decimals
       console.log(balance)
       callback(null, parseFloat(balance))
+    } catch(ex) {
+      console.log(ex)
+      return callback(ex)
+    }
+  }
+
+  _getDepositedTime = async (web3, asset, account, callback) => {
+    try {
+
+      const contract = new web3.eth.Contract(asset.vaultContractABI, asset.vaultContractAddress)
+      const depositedTime = await contract.methods.deposittime(account.address).call({ from: account.address });
+      callback(null, depositedTime)
     } catch(ex) {
       console.log(ex)
       return callback(ex)
@@ -2830,19 +2843,37 @@ class Store {
     const web3 = new Web3(store.getStore('web3context').library.provider);
 
     async.map(assets, (asset, callback) => {
-      async.parallel([
-        (callbackInner) => { this._getERC20Balance(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getPooledBalance(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getPoolPricePerShare(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getMyBalance(web3, asset, account, callbackInner) }
-      ], (err, data) => {
-        asset.balance = data[0]
-        asset.pooledBalance = data[1]
-        asset.pricePerFullShare = data[2]
-        asset.myBalance = data[3]
-        
-        callback(null, asset)
-      })
+      if ( asset.earnNeed24Hours) {
+        async.parallel([
+          (callbackInner) => { this._getERC20Balance(web3, asset, account, callbackInner) },
+          (callbackInner) => { this._getPooledBalance(web3, asset, account, callbackInner) },
+          (callbackInner) => { this._getPoolPricePerShare(web3, asset, account, callbackInner) },
+          (callbackInner) => { this._getMyBalance(web3, asset, account, callbackInner) },
+          (callbackInner) => { this._getDepositedTime(web3, asset, account, callbackInner) }
+        ], (err, data) => {
+          asset.balance = data[0]
+          asset.pooledBalance = data[1]
+          asset.pricePerFullShare = data[2]
+          asset.myBalance = data[3]
+          asset.depositedTime = data[4]
+
+          callback(null, asset)
+        })
+      } else {
+        async.parallel([
+          (callbackInner) => { this._getERC20Balance(web3, asset, account, callbackInner) },
+          (callbackInner) => { this._getPooledBalance(web3, asset, account, callbackInner) },
+          (callbackInner) => { this._getPoolPricePerShare(web3, asset, account, callbackInner) },
+          (callbackInner) => { this._getMyBalance(web3, asset, account, callbackInner) }
+        ], (err, data) => {
+          asset.balance = data[0]
+          asset.pooledBalance = data[1]
+          asset.pricePerFullShare = data[2]
+          asset.myBalance = data[3]
+
+          callback(null, asset)
+        })
+      }
     }, (err, assets) => {
       if(err) {
         return emitter.emit(ERROR, err)
@@ -2857,7 +2888,6 @@ class Store {
     if(asset.vaultContractAddress === null) {
       return callback(null, 0)
     }
-
     let vaultContract = new web3.eth.Contract(asset.vaultContractABI, asset.vaultContractAddress)
     var  balance = await vaultContract.methods.cal_out(account.address).call({ from: account.address });
     balance = parseFloat(balance)/10**asset.decimals

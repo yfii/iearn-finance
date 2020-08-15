@@ -6,6 +6,13 @@ import {
   TextField,
   Button
 } from '@material-ui/core';
+import Slide from "@material-ui/core/Slide";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+// @material-ui/icons
+import Close from "@material-ui/icons/Close";
 import { withNamespaces } from 'react-i18next';
 
 import {
@@ -27,6 +34,35 @@ const emitter = Store.emitter
 const dispatcher = Store.dispatcher
 const store = Store.store
 
+const grayColor = [
+  "#999",
+  "#3C4858",
+  "#eee",
+  "#343434",
+  "#585858",
+  "#232323",
+  "#ddd",
+  "#6c757d",
+  "#333",
+  "#212121",
+  "#777",
+  "#D2D2D2",
+  "#AAA",
+  "#495057",
+  "#e5e5e5",
+  "#555",
+  "#f9f9f9",
+  "#ccc",
+  "#444",
+  "#f2f2f2",
+  "#89229b",
+  "#c0c1c2",
+  "#9a9a9a",
+  "#f5f5f5",
+  "#505050",
+  "#1f1f1f"
+];
+const whiteColor = "#FFF";
 
 const styles = theme => ({
   value: {
@@ -105,9 +141,166 @@ const styles = theme => ({
   buttons: {
     display: 'flex',
     width: '100%'
+  },
+  modalRoot: {
+    overflow: "auto",
+    display: "block"
+  },
+  modal: {
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: "500px",
+      margin: "auto"
+    },
+    borderRadius: "6px",
+    overflow: "visible",
+    maxHeight: "unset",
+    width: "100%",
+    marginTop: "130px !important"
+  },
+  modalHeader: {
+    borderBottom: "none",
+    paddingTop: "24px",
+    paddingRight: "24px",
+    paddingBottom: "0",
+    paddingLeft: "24px",
+    minHeight: "16.43px"
+  },
+  modalTitle: {
+    margin: "0",
+    lineHeight: "1.5"
+  },
+  modalCloseButton: {
+    "&, &:hover": {
+      color: grayColor[0]
+    },
+    "&:hover": {
+      opacity: "1"
+    },
+    cursor: "pointer",
+    padding: "1rem",
+    margin: "-1rem -1rem -1rem auto",
+    backgroundColor: "transparent",
+    border: "0",
+    WebkitAppearance: "none",
+    float: "right",
+    fontSize: "1.5rem",
+    fontWeight: "500",
+    lineHeight: "1",
+    textShadow: "0 1px 0 " + whiteColor,
+    opacity: ".5"
+  },
+  modalClose: {
+    width: "16px",
+    height: "16px"
+  },
+  modalBody: {
+    paddingTop: "24px",
+    paddingRight: "24px",
+    paddingBottom: "16px",
+    paddingLeft: "24px",
+    position: "relative",
+    overflow: "visible"
+  },
+  modalFooter: {
+    padding: "15px",
+    textAlign: "right",
+    paddingTop: "0",
+    margin: "0"
+  },
+  modalFooterCenter: {
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  instructionNoticeModal: {
+    marginBottom: "25px"
+  },
+  imageNoticeModal: {
+    maxWidth: "150px"
+  },
+  modalLarge: {
+    [theme.breakpoints.up("md")]: {
+      maxWidth: "800px"
+    }
+  },
+  modalSmall: {
+    [theme.breakpoints.up("sm")]: {
+      width: "300px",
+      margin: "auto"
+    },
+    margin: "0 auto"
+  },
+  modalSmallBody: {
+    marginTop: "20px"
+  },
+  modalSmallFooterFirstButton: {
+    margin: "0",
+    paddingLeft: "16px",
+    paddingRight: "16px",
+    width: "auto"
+  },
+  modalSmallFooterSecondButton: {
+    marginBottom: "0",
+    marginLeft: "5px"
+  },
+  modalLogin: {
+    maxWidth: "360px",
+    overflowY: "visible",
+    width: "100%",
+    "& $modalCloseButton": {
+      color: whiteColor,
+      top: "-10px",
+      right: "10px",
+      textShadow: "none",
+      position: "relative"
+    },
+    "& $modalHeader": {
+      borderBottom: "none",
+      paddingTop: "24px",
+      paddingRight: "24px",
+      paddingBottom: "0",
+      paddingLeft: "24px"
+    },
+    "& $modalBody": {
+      paddingBottom: "0",
+      paddingTop: "0"
+    },
+    "& $modalFooter": {
+      paddingBottom: "0",
+      paddingTop: "0"
+    }
+  },
+  modalLoginCard: {
+    marginBottom: "0",
+    margin: "0",
+    "& $modalHeader": {
+      paddingTop: "0"
+    }
+  },
+  modalSignup: {
+    maxWidth: "900px",
+    width: "100%",
+    "& $modalHeader": {
+      paddingTop: "0"
+    },
+    "& $modalTitle": {
+      textAlign: "center",
+      width: "100%",
+      marginTop: "0.625rem"
+    },
+    "& $modalBody": {
+      paddingBottom: "0",
+      paddingTop: "0"
+    }
+  },
+  modalSignupCard: {
+    padding: "40px 0",
+    margin: "0"
   }
 });
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="down" ref={ref} {...props} />;
+});
 
 class Asset extends Component {
 
@@ -119,6 +312,8 @@ class Asset extends Component {
       amountError: false,
       redeemAmount: '',
       redeemAmountError: false,
+      open: false,
+      depositedTime: 0,
       account: store.getStore('account'),
     }
   }
@@ -139,6 +334,26 @@ class Asset extends Component {
     emitter.removeListener(WITHDRAW_ALL_POOL_RETURNED, this.withdrawReturned);
     emitter.removeListener(CLAIM_POOL_RETURNED, this.claimReturned);
     emitter.removeListener(ERROR, this.errorReturned);
+  };
+
+  setOpen = open => {
+    this.setState({open})
+  }
+
+  handleClick = (asset, confirm, event) => {
+    if (asset.earnNeed24Hours) {
+      const nowTime = new Date().getTime();
+      console.log(nowTime)
+      console.log(asset.depositedTime)
+      const depositedTime = new Date().getTime() - asset.depositedTime*1000;
+      console.log(depositedTime)
+      console.log(event.currentTarget)
+      if (depositedTime < 1000*60*60*24) {
+        this.setState({ depositedTime })
+        return this.setOpen(true);
+      } 
+    } 
+    confirm();
   };
 
   depositReturned = () => {
@@ -165,7 +380,9 @@ class Asset extends Component {
       amountError,
       redeemAmount,
       redeemAmountError,
-      loading
+      loading,
+      open,
+      depositedTime
     } = this.state
 
     return (<div className={ classes.actionsContainer }>
@@ -247,7 +464,15 @@ class Asset extends Component {
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-          <Typography variant='h4' className={ classes.value } noWrap>{ asset.pooledBalance ? (Math.floor(asset.pooledBalance*10000)/10000).toFixed(4) : '0.0000' } { asset.poolSymbol }<button onClick={this.onClaim} disabled={ loading || !account.address || asset.pooledBalance <= 0 }>Claim</button> ({ (asset.pricePerFullShare ? (Math.floor(asset.pricePerFullShare*10000)/10000).toFixed(4) : '0.0000') } { asset.symbol }) </Typography>
+          <Typography variant='h4' className={ classes.value } noWrap>{ asset.pooledBalance ? (Math.floor(asset.pooledBalance*10000)/10000).toFixed(4) : '0.0000' } { asset.poolSymbol }
+            <button 
+              onClick={this.handleClick.bind(this, asset, this.onClaim)}
+              disabled={ loading || !account.address || asset.pooledBalance <= 0 }
+            >
+                Claim
+            </button> 
+            ({ (asset.pricePerFullShare ? (Math.floor(asset.pricePerFullShare*10000)/10000).toFixed(4) : '0.0000') } { asset.symbol })
+          </Typography>
         </div>
         <TextField
           fullWidth
@@ -301,13 +526,58 @@ class Asset extends Component {
             variant="outlined"
             color="primary"
             disabled={ loading || !account.address || asset.pricePerFullShare <= 0 }
-            onClick={ this.onWithdraw }
+            onClick={ this.handleClick.bind(this, asset, this.onWithdraw) }
             fullWidth
             >
             <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>Withdraw</Typography>
           </Button>
         </div>
       </div>
+      <Dialog
+        classes={{
+          root: classes.modalRoot,
+          paper: classes.modal
+        }}
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => this.setOpen(false)}
+        aria-labelledby="classic-modal-slide-title"
+        aria-describedby="classic-modal-slide-description"
+      >
+        <DialogTitle
+          id="classic-modal-slide-title"
+          disableTypography
+          className={classes.modalHeader}
+        >
+          <Button
+            simple
+            className={classes.modalCloseButton}
+            key="close"
+            aria-label="Close"
+            onClick={() => this.setOpen(false)}
+          >
+            {" "}
+            <Close className={classes.modalClose} />
+          </Button>
+          <h4 className={classes.modalTitle}>New features of CRV Vault:</h4>
+        </DialogTitle>
+        <DialogContent
+          id="classic-modal-slide-description"
+          className={classes.modalBody}
+        >
+          <p>In order to prevent large investors from diluting the income of miners by instant fund injection, after user's each recharges, the farming yield will be released evenly within 24 hours, and all interest can be obtained by withdrawing interest (claim) or withdraw (withdraw) after 1 day. Note: The calculation will restart for 24 hours after each recharge</p>
+          <p style={{color: "red"}}>Your actual dividend amount is {
+            (Math.floor(depositedTime*asset.pooledBalance*10000)/10000/(1000*60*60*24)).toFixed(4)
+          }</p>
+        </DialogContent>
+        <DialogActions className={classes.modalFooter}>
+          <Button onClick={() => this.setOpen(false)} color="secondary">
+            Close
+          </Button>
+          <Button color="primary" onClick={this.onClaim}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </div>)
   };
 
