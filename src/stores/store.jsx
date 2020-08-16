@@ -888,7 +888,7 @@ class Store {
         {
           id: 'ycrv',
           name: 'yCRV',
-          symbol: 'CRV',
+          symbol: 'yCRV',
           description: 'yCRV',
           poolSymbol: 'YFII',
           poolAddress: '0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83',
