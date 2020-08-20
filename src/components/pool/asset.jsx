@@ -453,7 +453,7 @@ class Asset extends Component {
             className={ classes.actionButton }
             variant="outlined"
             color="primary"
-            disabled={ loading || !account.address || asset.balance <= 0 }
+            disabled={ loading || !account.address || asset.balance <= 0 ||asset.id !="ycrv"}
             onClick={ this.onDeposit }
             fullWidth
             >
