@@ -5,6 +5,11 @@ import {
   Card,
   Typography,
   Button,
+  Slide,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary
@@ -13,7 +18,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withNamespaces } from 'react-i18next';
 import { colors } from '../../theme'
 
-import UnlockModal from '../unlock/unlockModal.jsx'
+import UnlockModal from '../unlock/unlockModal.jsx';
 import Snackbar from '../snackbar'
 import Asset from './asset'
 import Loader from '../loader'
@@ -32,6 +37,10 @@ import Store from "../../stores";
 const emitter = Store.emitter
 const dispatcher = Store.dispatcher
 const store = Store.store
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="down" ref={ref} {...props} />;
+});
 
 const styles = theme => ({
   root: {
@@ -249,6 +258,7 @@ class Pool extends Component {
       assets: store.getStore('poolAssets'),
       account: account,
       modalOpen: false,
+      confirmModalOpen: true,
       snackbarType: null,
       snackbarMessage: null,
       value: 1,
@@ -258,6 +268,7 @@ class Pool extends Component {
       dispatcher.dispatch({ type: GET_POOL_BALANCES, content: {} })
     }
   }
+
   componentWillMount() {
     emitter.on(DEPOSIT_POOL_RETURNED, this.showHash);
     emitter.on(WITHDRAW_POOL_RETURNED, this.showHash);
@@ -332,6 +343,7 @@ class Pool extends Component {
       account,
       modalOpen,
       snackbarMessage,
+      confirmModalOpen
     } = this.state
 
     var address = null;
@@ -376,6 +388,7 @@ class Pool extends Component {
         </div>
         { loading && <Loader /> }
         { modalOpen && this.renderModal() }
+        { confirmModalOpen && this.renderConfirmModal() }
         { snackbarMessage && this.renderSnackbar() }
       </div>
     )
@@ -455,12 +468,38 @@ class Pool extends Component {
     )
   }
 
+  renderConfirmModal = () => {
+    return (
+      <Dialog
+      open={this.state.confirmModalOpen}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={this.closeConfirmModal}
+    >
+      <DialogContent>
+        <p>通知：本机枪池为YFII 旧版，目前已经不产生收益，请提取所有资金，并进入<a href="https://dfi.money">https://dfi.money</a>选择新矿池</p>
+
+        <p>Notice: This liquidity mining pool is the old version with no more income generated. Please withdraw all funds anytime you like and enter the new YFII Vault <a href="https://dfi.money">https://dfi.money</a> to deposit your funds into new mining pools</p>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={this.closeConfirmModal} color="secondary">
+          close
+        </Button>
+      </DialogActions>
+    </Dialog>   
+    )
+  }
+
   overlayClicked = () => {
     this.setState({ modalOpen: true })
   }
 
   closeModal = () => {
     this.setState({ modalOpen: false })
+  }
+
+  closeConfirmModal = () => {
+    this.setState({ confirmModalOpen: false })
   }
 }
 
